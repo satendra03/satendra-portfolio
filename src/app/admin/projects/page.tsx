@@ -1,5 +1,7 @@
 "use client";
 
+import { toast } from "sonner";
+
 import React, { useState, useEffect } from "react";
 import { Project } from "@/types";
 import { collection, getDocs, addDoc, deleteDoc, doc, updateDoc, writeBatch } from "firebase/firestore";
@@ -57,8 +59,10 @@ export default function AdminProjects() {
             });
             await batch.commit();
             await revalidateProjects();
+            toast.success("Projects reordered successfully");
         } catch (error) {
             console.error("Error updating project order:", error);
+            toast.error("Failed to reorder projects");
         }
     };
 
@@ -83,8 +87,10 @@ export default function AdminProjects() {
             });
             fetchProjects();
             await revalidateProjects();
+            toast.success(editingProject ? "Project updated successfully" : "Project created successfully");
         } catch (error) {
             console.error("Error saving project:", error);
+            toast.error("Failed to save project");
         }
     };
 
@@ -94,8 +100,10 @@ export default function AdminProjects() {
                 await deleteDoc(doc(db, "projects", id));
                 fetchProjects();
                 await revalidateProjects();
+                toast.success("Project deleted successfully");
             } catch (error) {
                 console.error("Error deleting project:", error);
+                toast.error("Failed to delete project");
             }
         }
     };

@@ -1,5 +1,7 @@
 "use client";
 
+import { toast } from "sonner";
+
 import React, { useState, useEffect } from "react";
 import { Skill } from "@/types";
 import { collection, getDocs, addDoc, deleteDoc, doc, updateDoc, writeBatch } from "firebase/firestore";
@@ -53,8 +55,10 @@ export default function AdminSkills() {
             });
             await batch.commit();
             await revalidateSkills();
+            toast.success("Skills reordered successfully");
         } catch (error) {
             console.error("Error updating skill order:", error);
+            toast.error("Failed to reorder skills");
         }
     };
 
@@ -77,8 +81,10 @@ export default function AdminSkills() {
             });
             fetchSkills();
             await revalidateSkills();
+            toast.success(editingSkill ? "Skill updated successfully" : "Skill created successfully");
         } catch (error) {
             console.error("Error saving skill:", error);
+            toast.error("Failed to save skill");
         }
     };
 
@@ -88,8 +94,10 @@ export default function AdminSkills() {
                 await deleteDoc(doc(db, "skills", id));
                 fetchSkills();
                 await revalidateSkills();
+                toast.success("Skill deleted successfully");
             } catch (error) {
                 console.error("Error deleting skill:", error);
+                toast.error("Failed to delete skill");
             }
         }
     };

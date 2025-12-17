@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import HeaderWrapper from "@/components/layout/header-wrapper";
+import { Toaster } from "@/components/ui/sonner";
 
 import { AuthProvider } from "@/context/auth-context";
 
@@ -37,6 +38,7 @@ export default function RootLayout({
         <AuthProvider>
           <HeaderWrapper />
           {children}
+          <Toaster />
         </AuthProvider>
       </body>
     </html>

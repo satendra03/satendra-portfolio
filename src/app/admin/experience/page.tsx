@@ -1,5 +1,7 @@
 "use client";
 
+import { toast } from "sonner";
+
 import React, { useState, useEffect } from "react";
 import { Organization } from "@/types";
 import { collection, getDocs, addDoc, deleteDoc, doc, updateDoc, writeBatch } from "firebase/firestore";
@@ -53,8 +55,10 @@ export default function AdminExperience() {
             });
             await batch.commit();
             await revalidateExperience();
+            toast.success("Experience reordered successfully");
         } catch (error) {
             console.error("Error updating experience order:", error);
+            toast.error("Failed to reorder experience");
         }
     };
 
@@ -72,8 +76,10 @@ export default function AdminExperience() {
             setFormData({ name: "", role: "", description: "", funny: "" });
             fetchExperiences();
             await revalidateExperience();
+            toast.success(editingExperience ? "Experience updated successfully" : "Experience added successfully");
         } catch (error) {
             console.error("Error saving experience:", error);
+            toast.error("Failed to save experience");
         }
     };
 
@@ -83,8 +89,10 @@ export default function AdminExperience() {
                 await deleteDoc(doc(db, "experiences", id));
                 fetchExperiences();
                 await revalidateExperience();
+                toast.success("Experience deleted successfully");
             } catch (error) {
                 console.error("Error deleting experience:", error);
+                toast.error("Failed to delete experience");
             }
         }
     };

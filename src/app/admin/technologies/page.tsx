@@ -1,5 +1,7 @@
 "use client";
 
+import { toast } from "sonner";
+
 import React, { useState, useEffect } from "react";
 import { Technology } from "@/types";
 import { collection, getDocs, addDoc, deleteDoc, doc, updateDoc, writeBatch } from "firebase/firestore";
@@ -53,8 +55,10 @@ export default function AdminTechnologies() {
             });
             await batch.commit();
             await revalidateTechnologies();
+            toast.success("Technologies reordered successfully");
         } catch (error) {
             console.error("Error updating technology order:", error);
+            toast.error("Failed to reorder technologies");
         }
     };
 
@@ -72,8 +76,10 @@ export default function AdminTechnologies() {
             setFormData({ name: "", category: "", description: "", funny: "" });
             fetchTechnologies();
             await revalidateTechnologies();
+            toast.success(editingTech ? "Technology updated successfully" : "Technology added successfully");
         } catch (error) {
             console.error("Error saving technology:", error);
+            toast.error("Failed to save technology");
         }
     };
 
@@ -83,8 +89,10 @@ export default function AdminTechnologies() {
                 await deleteDoc(doc(db, "technologies", id));
                 fetchTechnologies();
                 await revalidateTechnologies();
+                toast.success("Technology deleted successfully");
             } catch (error) {
                 console.error("Error deleting technology:", error);
+                toast.error("Failed to delete technology");
             }
         }
     };

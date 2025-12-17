@@ -1,5 +1,7 @@
 "use client";
 
+import { toast } from "sonner";
+
 import React, { useState, useEffect } from "react";
 import { ContactLink } from "@/types";
 import { collection, getDocs, addDoc, deleteDoc, doc, updateDoc, writeBatch } from "firebase/firestore";
@@ -54,8 +56,10 @@ export default function AdminContacts() {
             });
             await batch.commit();
             await revalidateContacts();
+            toast.success("Contacts reordered successfully");
         } catch (error) {
             console.error("Error updating contact order:", error);
+            toast.error("Failed to reorder contacts");
         }
     };
 
@@ -73,8 +77,10 @@ export default function AdminContacts() {
             setFormData({ title: "", link: "", desc: "", icon: "Mail" });
             fetchContacts();
             await revalidateContacts();
+            toast.success(editingContact ? "Contact updated successfully" : "Contact added successfully");
         } catch (error) {
             console.error("Error saving contact:", error);
+            toast.error("Failed to save contact");
         }
     };
 
@@ -84,8 +90,10 @@ export default function AdminContacts() {
                 await deleteDoc(doc(db, "contacts", id));
                 fetchContacts();
                 await revalidateContacts();
+                toast.success("Contact deleted successfully");
             } catch (error) {
                 console.error("Error deleting contact:", error);
+                toast.error("Failed to delete contact");
             }
         }
     };
