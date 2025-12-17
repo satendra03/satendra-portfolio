@@ -6,6 +6,7 @@ import { collection, getDocs, addDoc, deleteDoc, doc, updateDoc, writeBatch } fr
 import { db } from "@/lib/firebase/client";
 import { Plus, Trash, Pencil, X } from "lucide-react";
 import SortableList from "@/components/admin/sortable-list";
+import { revalidateTechnologies } from "@/app/actions/revalidate";
 
 export default function AdminTechnologies() {
     const [technologies, setTechnologies] = useState<Technology[]>([]);
@@ -51,6 +52,7 @@ export default function AdminTechnologies() {
                 }
             });
             await batch.commit();
+            await revalidateTechnologies();
         } catch (error) {
             console.error("Error updating technology order:", error);
         }
@@ -69,6 +71,7 @@ export default function AdminTechnologies() {
             setEditingTech(null);
             setFormData({ name: "", category: "", description: "", funny: "" });
             fetchTechnologies();
+            await revalidateTechnologies();
         } catch (error) {
             console.error("Error saving technology:", error);
         }
@@ -79,6 +82,7 @@ export default function AdminTechnologies() {
             try {
                 await deleteDoc(doc(db, "technologies", id));
                 fetchTechnologies();
+                await revalidateTechnologies();
             } catch (error) {
                 console.error("Error deleting technology:", error);
             }

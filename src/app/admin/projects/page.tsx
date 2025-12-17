@@ -8,6 +8,7 @@ import { Plus, Trash, Pencil, X } from "lucide-react";
 import Image from "next/image";
 import ImageUpload from "@/components/admin/image-upload";
 import SortableList from "@/components/admin/sortable-list";
+import { revalidateProjects } from "@/app/actions/revalidate";
 
 export default function AdminProjects() {
     const [projects, setProjects] = useState<Project[]>([]);
@@ -55,6 +56,7 @@ export default function AdminProjects() {
                 }
             });
             await batch.commit();
+            await revalidateProjects();
         } catch (error) {
             console.error("Error updating project order:", error);
         }
@@ -80,6 +82,7 @@ export default function AdminProjects() {
                 githubLink: "",
             });
             fetchProjects();
+            await revalidateProjects();
         } catch (error) {
             console.error("Error saving project:", error);
         }
@@ -90,6 +93,7 @@ export default function AdminProjects() {
             try {
                 await deleteDoc(doc(db, "projects", id));
                 fetchProjects();
+                await revalidateProjects();
             } catch (error) {
                 console.error("Error deleting project:", error);
             }

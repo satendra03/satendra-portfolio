@@ -7,6 +7,7 @@ import { db } from "@/lib/firebase/client";
 import { Plus, Trash, Pencil, X } from "lucide-react";
 import * as LucideIcons from "lucide-react";
 import SortableList from "@/components/admin/sortable-list";
+import { revalidateContacts } from "@/app/actions/revalidate";
 
 export default function AdminContacts() {
     const [contacts, setContacts] = useState<ContactLink[]>([]);
@@ -52,6 +53,7 @@ export default function AdminContacts() {
                 }
             });
             await batch.commit();
+            await revalidateContacts();
         } catch (error) {
             console.error("Error updating contact order:", error);
         }
@@ -70,6 +72,7 @@ export default function AdminContacts() {
             setEditingContact(null);
             setFormData({ title: "", link: "", desc: "", icon: "Mail" });
             fetchContacts();
+            await revalidateContacts();
         } catch (error) {
             console.error("Error saving contact:", error);
         }
@@ -80,6 +83,7 @@ export default function AdminContacts() {
             try {
                 await deleteDoc(doc(db, "contacts", id));
                 fetchContacts();
+                await revalidateContacts();
             } catch (error) {
                 console.error("Error deleting contact:", error);
             }

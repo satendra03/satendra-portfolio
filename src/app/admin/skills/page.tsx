@@ -6,6 +6,7 @@ import { collection, getDocs, addDoc, deleteDoc, doc, updateDoc, writeBatch } fr
 import { db } from "@/lib/firebase/client";
 import { Plus, Trash, Pencil, X } from "lucide-react";
 import SortableList from "@/components/admin/sortable-list";
+import { revalidateSkills } from "@/app/actions/revalidate";
 
 export default function AdminSkills() {
     const [skills, setSkills] = useState<Skill[]>([]);
@@ -51,6 +52,7 @@ export default function AdminSkills() {
                 }
             });
             await batch.commit();
+            await revalidateSkills();
         } catch (error) {
             console.error("Error updating skill order:", error);
         }
@@ -74,6 +76,7 @@ export default function AdminSkills() {
                 category: "",
             });
             fetchSkills();
+            await revalidateSkills();
         } catch (error) {
             console.error("Error saving skill:", error);
         }
@@ -84,6 +87,7 @@ export default function AdminSkills() {
             try {
                 await deleteDoc(doc(db, "skills", id));
                 fetchSkills();
+                await revalidateSkills();
             } catch (error) {
                 console.error("Error deleting skill:", error);
             }

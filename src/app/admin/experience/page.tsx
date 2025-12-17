@@ -6,6 +6,7 @@ import { collection, getDocs, addDoc, deleteDoc, doc, updateDoc, writeBatch } fr
 import { db } from "@/lib/firebase/client";
 import { Plus, Trash, Pencil, X } from "lucide-react";
 import SortableList from "@/components/admin/sortable-list";
+import { revalidateExperience } from "@/app/actions/revalidate";
 
 export default function AdminExperience() {
     const [experiences, setExperiences] = useState<Organization[]>([]);
@@ -51,6 +52,7 @@ export default function AdminExperience() {
                 }
             });
             await batch.commit();
+            await revalidateExperience();
         } catch (error) {
             console.error("Error updating experience order:", error);
         }
@@ -69,6 +71,7 @@ export default function AdminExperience() {
             setEditingExperience(null);
             setFormData({ name: "", role: "", description: "", funny: "" });
             fetchExperiences();
+            await revalidateExperience();
         } catch (error) {
             console.error("Error saving experience:", error);
         }
@@ -79,6 +82,7 @@ export default function AdminExperience() {
             try {
                 await deleteDoc(doc(db, "experiences", id));
                 fetchExperiences();
+                await revalidateExperience();
             } catch (error) {
                 console.error("Error deleting experience:", error);
             }
